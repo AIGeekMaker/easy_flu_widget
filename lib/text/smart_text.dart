@@ -1,5 +1,4 @@
 import 'package:easy_flu_widget/box/smart_container.dart';
-import 'package:easy_flu_widget/utils/win_media.dart';
 import 'package:flutter/material.dart';
 
 class SmartText extends StatelessWidget {
@@ -42,7 +41,9 @@ class SmartText extends StatelessWidget {
   Widget build(BuildContext context) {
     TextStyle? textStyle = this.textStyle;
     String realText = text ?? '';
-    if (overflow == TextOverflow.ellipsis && maxLines == 1) {
+    TextOverflow? realOverflow = overflow;
+    if (maxLines == 1) {
+      realOverflow = realOverflow ?? TextOverflow.ellipsis;
       realText = _breakWord(realText);
     }
 
@@ -56,8 +57,8 @@ class SmartText extends StatelessWidget {
 
       // 只覆盖用户明确传入的属性，保持主题属性
       textStyle = textStyle.copyWith(
-        fontSize: fontSize != null ? getSp(fontSize!) : null,
-        color: color,
+        fontSize: fontSize,
+        color: color ?? textStyle.color,
         fontWeight: fontWeight,
         height: height,
         fontFamily: fontFamily,
@@ -66,9 +67,9 @@ class SmartText extends StatelessWidget {
       // 用户传入了textStyle，合并用户参数
       double? finalFontSize;
       if (fontSize != null) {
-        finalFontSize = getSp(fontSize!);
+        finalFontSize = fontSize;
       } else if (textStyle.fontSize != null) {
-        finalFontSize = getSp(textStyle.fontSize!);
+        finalFontSize = textStyle.fontSize;
       }
 
       textStyle = textStyle.copyWith(
@@ -85,7 +86,7 @@ class SmartText extends StatelessWidget {
       style: textStyle,
       strutStyle: strutStyle,
       maxLines: maxLines,
-      overflow: overflow,
+      overflow: realOverflow,
       textAlign: textAlign,
     );
     if (onTap != null || margin != null || hideIfEmpty || padding != null) {
